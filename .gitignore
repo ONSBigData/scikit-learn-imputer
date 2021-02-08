@@ -1,0 +1,8 @@
+.idea
+
+saved_model.z
+
+__pycache__
+
+*.docx
+*.pptx
