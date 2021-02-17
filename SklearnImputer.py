@@ -81,6 +81,12 @@ class SklearnImputer():
     >>> imputed_df = output['imputed_data']
     >>> imputed_df
 
+            A   B   C
+        0  1.0  1  1.0
+        1  4.0  3  1.0
+        2  2.0  4  2.0
+        3  3.0  3  1.0
+        4  4.0  4  2.0
     """
 
     def __init__(self, input_data, categorical=None, save_models_to=r'./saved_model.z', round_column=None,
