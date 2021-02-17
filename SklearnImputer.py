@@ -50,17 +50,36 @@ class SklearnImputer():
             This file must be a .z file and the model will be saved as a bytes object. To view the model
             read it in using joblib.load(save_models_to) in python.
 
-    round_column : list, optional (default=None])
+    round_column : list, optional (default=None)
             List of continuous variables that are to be rounded as part of the model
 
     class_threshold : int, optional (default = 30)
                 If a categorical variable has more classes than this threshold then it will not be used as a feature in the model.
 
-    features: list, default = None
+    features: list, (default = None)
         list of columns to use as features, default all are used
 
-    missing_flags: boolean, default = False
+    missing_flags: boolean, (default = False)
         Include the missing flags as features
+
+    Example Usage
+    --------------
+
+    For a simple imputation problem where you do not want to save a trained model. Your data set df should have
+    nan representing missing values.
+
+    >>> from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+    >>> from SklearnImputer import SklearnImputer
+    >>> from pandas import DataFrame
+    >>> from numpy import nan
+    >>>
+    >>> df = DataFrame({'A': [1, nan, 2, 3, 4], 'B': [1, 3, 4, 3, 4], 'C': [nan, nan, 2, 1, 2]})
+    >>>
+    >>> imputer = SklearnImputer(input_data=df)
+    >>> output = imputer.fit(classification=DecisionTreeClassifier(), regression=DecisionTreeRegressor(), transform=True)
+    >>>
+    >>> imputed_df = output['imputed_data']
+    >>> imputed_df
 
     """
 
