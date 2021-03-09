@@ -105,10 +105,10 @@ class SklearnImputer():
 
     If you want to save the model to apply it at a later stage or to avoid re-training the model when reproducing results:
 
-    >>> training_set = DataFrame({'A': [nan, 4, 2, 3, 4], 'B': [nan, 3, 4, 3, 4], 'C': [1, nan, 2, 1, 2],
+    >>> df = DataFrame({'A': [nan, 4, 2, 3, 4], 'B': [nan, 3, 4, 3, 4], 'C': [1, nan, 2, 1, 2],
     >>>                           'D': [1, 0, nan, nan, 0], 'E': [1, nan, 1, 1, 0], 'F': [0, 1, 0, nan, nan]})
     >>>
-    >>> imputer = SklearnImputer(input_data=training_set, categorical=['D', 'E', 'F'], save_models_to=r'./saved_model.z')
+    >>> imputer = SklearnImputer(input_data=df, categorical=['D', 'E', 'F'], save_models_to=r'./saved_model.z')
     >>> output = imputer.fit(classification=DecisionTreeClassifier(), regression=DecisionTreeRegressor(), transform=False)
     >>>
     >>> model_applied_output = imputer.transform()
