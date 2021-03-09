@@ -78,8 +78,7 @@ class SklearnImputer():
     >>> imputer = SklearnImputer(input_data=df)
     >>> output = imputer.fit(classification=DecisionTreeClassifier(), regression=DecisionTreeRegressor(), transform=True)
     >>>
-    >>> imputed_df = output['imputed_data']
-    >>> imputed_df
+    >>> output['imputed_data']
 
             A   B   C
         0  1.0  1  1.0
@@ -87,6 +86,40 @@ class SklearnImputer():
         2  2.0  4  2.0
         3  3.0  3  1.0
         4  4.0  4  2.0
+
+    If you want to use the tool for a mix of categorical and continuous variables:
+    >>> df = DataFrame({'A': [1, nan, 2, 3, 4], 'B': [1, 3, 4, 3, 4], 'C': [nan, nan, 2, 1, 2],
+    >>>                 'D': [1, 0, nan, 1, 0], 'E': [1, 1, nan, 1, nan], 'F': [0, nan, nan, 1, 0]})
+    >>>
+    >>> imputer = SklearnImputer(input_data=df, categorical=['D', 'E', 'F'])
+    >>> output = imputer.fit(classification=DecisionTreeClassifier(), regression=DecisionTreeRegressor(), transform=True)
+    >>>
+    >>> output['imputed_data']
+
+           A    B    C    D    E    F
+        0  1.0  1  1.0  1.0  1.0  0.0
+        1  4.0  3  1.0  0.0  1.0  0.0
+        2  2.0  4  2.0  1.0  1.0  0.0
+        3  3.0  3  1.0  1.0  1.0  1.0
+        4  4.0  4  2.0  0.0  1.0  0.0
+
+    If you want to save the model to apply it at a later stage or to avoid re-training the model when reproducing results:
+
+    >>> training_set = DataFrame({'A': [nan, 4, 2, 3, 4], 'B': [nan, 3, 4, 3, 4], 'C': [1, nan, 2, 1, 2],
+    >>>                           'D': [1, 0, nan, nan, 0], 'E': [1, nan, 1, 1, 0], 'F': [0, 1, 0, nan, nan]})
+    >>>
+    >>> imputer = SklearnImputer(input_data=training_set, categorical=['D', 'E', 'F'], save_models_to=r'./saved_model.z')
+    >>> output = imputer.fit(classification=DecisionTreeClassifier(), regression=DecisionTreeRegressor(), transform=False)
+    >>>
+    >>> model_applied_output = imputer.transform()
+    >>> model_applied_output['imputed_data']
+
+             A    B    C    D    E    F
+        0  3.0  3.0  1.0  1.0  1.0  0.0
+        1  4.0  3.0  1.0  0.0  1.0  1.0
+        2  2.0  4.0  2.0  0.0  1.0  0.0
+        3  3.0  3.0  1.0  0.0  1.0  1.0
+        4  4.0  4.0  2.0  0.0  0.0  0.0
     """
 
     def __init__(self, input_data, categorical=None, save_models_to=r'./saved_model.z', round_column=None,
