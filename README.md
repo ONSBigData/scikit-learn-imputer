@@ -1,5 +1,7 @@
 # Scikit learn imputer
 
+![](/download.png)
+
 Use SklearnImputer to impute mixed data sets using scikit-learn algorithms.
 
 The tool has some great features:
