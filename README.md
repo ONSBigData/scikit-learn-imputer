@@ -8,10 +8,19 @@ The tool has some great features:
 - it can impute both catgeorical (using classifiers) and continuous (using regression) data. The user only needs to define what variables are catgeorical. One-hot encoding is done internally.
 - it will impute all the missing values in the data set (it does do this one at a time i.e. univariate).
 - it performs a simulation study - training the algorithm on 90% (by default) of the non-missing data and testing on 10% (by default) of the non-missing data. This allows you to assess performance.
-- trained models are saved automatically and then can re-loaded at a later stage - so if your model takes a long time to train, you only to train it once. This setting can also be switched off, if you want to do the transformation each time.
+- trained models are saved automatically and then can be re-loaded at a later stage - so if your model takes a long time to train, you only need to train it once. This setting can also be switched off, if you want to do the transformation each time.
 - saved models can be used to impute different data sets with the same features. You can use the validate method to assess how appropriate the saved models are.
 - you can use the select_model method to help decide what classifier and regressor you should use - based on performance (accuarcy / mean squared error, training time and deployment time)
 - you can make bespoke classifiers / regressors and input these (e.g. I made HierarchicalHotDeck).
+- you find between imputation variance from multiply imputed data sets using the function find_imputation_variance() in /SklearnImputer. For continuous, this is the variance of the means from each data set and for categorical it is the variance of the entropy. 
+
+### NOTE - Multiple imputation
+In practice, you should run imputation n times (around 5 times) and repeat your whole analysis post-imputation n times. Then you should find the variance between each of your estimates from each data set. Your final estimate can be the mean / mode of your estimates and the variance should be a combination of the within estimate variance (i.e. how we'd normally define variance) and the between estimate variance. The variances can be combined using the formula:
+```
+T = U + (1 + 1/m)B
+```
+Where U is the mean of the within data variances, B is the between variance of the estimates, and m is the number of imputed data sets.
+This Stack Exchange reply explains this in more detail: https://stats.stackexchange.com/questions/476829/rubins-rule-from-scratch-for-multiple-imputations.
 
 ## Example Usage 
 
