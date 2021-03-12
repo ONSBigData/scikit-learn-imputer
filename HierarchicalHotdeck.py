@@ -10,33 +10,25 @@ import unittest
 import numpy as np
 import pandas as pd
 from numpy.testing import assert_array_equal
-from sklearn.datasets import make_classification, make_regression
-from sklearn.decomposition import PCA
-from sklearn.feature_selection import SelectFromModel
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, mean_squared_error
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 
-class HierarchicalHotDeck():
-    def __init__(self, select_from_model=None, use='all'):
-        self.select_from_model = select_from_model
-        self.use = use
-
+class HierarchicalHotDeck:
+    """
+    Prediction by sorting the data set.
+    """
     def fit(self, x, Y):
-        if self.use == 'features':
-            self.var_selection = SelectFromModel(estimator=self.select_from_model).fit(x, Y)
-            features = self.var_selection.transform(x)
 
-        if self.use == 'dimension_reduction':
-            self.var_selection = self.select_from_model.fit(x)
-            features = self.var_selection.transform(x)
+        variables = [x, Y]
+        variable_names = ['x', 'Y']
+        types = [np.ndarray]*2
 
-        if self.use == 'all':
-            features = x
+        for variable, name, variable_type in zip(variables, variable_names, types):
+            if not isinstance(variable, variable_type):
+                raise TypeError(f"The variable {name} needs to be a {variable_type}")
 
-        targets = pd.DataFrame(Y)
-        features = pd.DataFrame(features)
+        targets = pd.DataFrame(Y.transpose())
+        features = pd.DataFrame(x)
 
         self.data = pd.merge(targets, features, right_index=True, left_index=True)
 
@@ -49,14 +41,13 @@ class HierarchicalHotDeck():
         return self
 
     def predict(self, X):
-        if self.use == 'features' or self.use == 'dimension_reduction':
-            features = self.var_selection.transform(X)
-        else:
-            features = X
+
+        if not isinstance(X, np.ndarray):
+            raise TypeError(f"The variable X needs to be an ndarray")
 
         features_cols = [x for x in self.data.columns if x != 'a']
 
-        features = pd.DataFrame(features, columns=features_cols)
+        features = pd.DataFrame(X, columns=features_cols)
 
         features['a'] = np.nan
 
@@ -79,43 +70,25 @@ class HierarchicalHotDeck():
 
 
 class TestHierarchicalHotDeck(unittest.TestCase):
+    """
+    Regression and classification work the same.
+    """
 
-    def test_scikit_learn_classifier_compatibility(self):
-        """
-        Simple test for the class to check that it is compatible with scikit-learn classification.
-        """
+    def test_hierarchical_hotdeck(self):
 
-        X, y = make_classification(random_state=0)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
-        model = HierarchicalHotDeck(select_from_model=LogisticRegression(max_iter=1, random_state=0))
-        fitted_model = model.fit(X_train, y_train)
-        output = fitted_model.predict(X_test)
+        train = np.array([[2, 3], [1, 6], [4, 5], [3, 4], [4, 6]])
+        train_targets = np.array([1, 1, 1, 0, 0])
+        test = np.array([[6, 2], [0, 1], [5, 7]])
+        test_targets = np.array([0, 1, 0])
 
-        expected_output = np.array([1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1])
+        model = HierarchicalHotDeck()
+        fitted_model = model.fit(train, train_targets)
+        output = fitted_model.predict(test)
+
+        expected_output = test_targets
 
         assert_array_equal(x=output, y=expected_output)
-        self.assertEqual(accuracy_score(output, y_test), 0.56)
-
-    def test_scikit_learn_regressor_compatibility(self):
-        """
-        Simple test for the class to check that it is compatible with scikit-learn regression.
-        """
-
-        X, y = make_regression(random_state=0)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
-        model = HierarchicalHotDeck(select_from_model=PCA(n_components=1, random_state=0),
-                                    use='dimension_reduction')
-
-        fitted_model = model.fit(X_train, y_train)
-        output = fitted_model.predict(X_test)
-        expected_output = np.array([-165.646056, 44.43178627, 57.0661767, -155.40695056, -79.24125662,
-                                    -102.36458935, -155.67806246, 58.99814991, -151.47230091, 58.99814991,
-                                    58.99814991, -166.45918392, 55.93824886, -3.38549645, -155.67806246,
-                                    -151.47230091, -31.2184318, -151.47230091, -84.02671899, -148.60915088,
-                                    -78.74149031, 319.32505752, -219.07412944, -165.646056, -84.02671899])
-
-        assert_array_equal(x=np.round(output, 2), y=np.round(expected_output, 2))
-        self.assertEqual(np.round(mean_squared_error(output, y_test), 2), 38257.87)
+        self.assertEqual(accuracy_score(output, test_targets), 1)
 
 
 if __name__ == '__main__':
