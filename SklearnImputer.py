@@ -1,5 +1,5 @@
 """
-SklearnImputer
+Scikit-learn imputer
 
 Created by G Bettsworth 09/2020
 

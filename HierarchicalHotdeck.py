@@ -1,5 +1,5 @@
 """
-Hierarchical Hotdeck prediction
+Hierarchical hotdeck prediction
 
 By G Bettsworth
 """
@@ -17,18 +17,31 @@ class HierarchicalHotDeck:
     """
     Prediction by sorting the data set.
     """
-    def fit(self, x, Y):
+    def fit(self, X, y):
+        """
+        Prepare data for sort.
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Target values.
 
-        variables = [x, Y]
-        variable_names = ['x', 'Y']
+        Returns
+        -------
+        self : object
+        """
+
+        variables = [X, y]
+        variable_names = ['X', 'y']
         types = [np.ndarray]*2
 
         for variable, name, variable_type in zip(variables, variable_names, types):
             if not isinstance(variable, variable_type):
                 raise TypeError(f"The variable {name} needs to be a {variable_type}")
 
-        targets = pd.DataFrame(Y.transpose())
-        features = pd.DataFrame(x)
+        targets = pd.DataFrame(y.transpose())
+        features = pd.DataFrame(X)
 
         self.data = pd.merge(targets, features, right_index=True, left_index=True)
 
@@ -41,6 +54,17 @@ class HierarchicalHotDeck:
         return self
 
     def predict(self, X):
+        """
+        Predict on test vectors X.
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        Returns
+        -------
+        output : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Predicted target values for X.
+        """
 
         if not isinstance(X, np.ndarray):
             raise TypeError(f"The variable X needs to be an ndarray")
