@@ -11,7 +11,7 @@ The tool has some great features:
 - trained models are saved automatically and then can be re-loaded at a later stage - so if your model takes a long time to train, you only need to train it once. This setting can also be switched off, if you want to do the transformation each time.
 - saved models can be used to impute different data sets with the same features. You can use the validate method to assess how appropriate the saved models are.
 - you can use the select_model method to help decide what classifier and regressor you should use - based on performance (accuarcy / mean squared error, training time and deployment time)
-- you can make bespoke classifiers / regressors and input these (e.g. I made HierarchicalHotDeck).
+- you can make bespoke classifiers / regressors or use any algorithm compatible with the scikit-learn API and input these.
 - you find between imputation variance from multiply imputed data sets using the function find_imputation_variance() in /SklearnImputer. For continuous, this is the variance of the means from each data set and for categorical it is the variance of the entropy. 
 
 ### NOTE - Multiple imputation
