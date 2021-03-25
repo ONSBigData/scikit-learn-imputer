@@ -55,7 +55,7 @@ class SklearnImputer():
 
     class_threshold : int, optional (default = 30)
                 If a categorical variable has more classes than this threshold then it will not be used as a feature in the model.
-                Imputation models generally do not many features - 30 would typically be far too many.
+                Imputation models generally do not need many features - 30 would typically be far too many.
 
     features: list, (default = None)
         list of columns to use as features, default all are used
