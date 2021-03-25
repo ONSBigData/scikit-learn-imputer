@@ -26,10 +26,9 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.utils.testing import ignore_warnings
 from tabulate import tabulate
 
-from HierarchicalHotDeck import HierarchicalHotDeck
 from SklearnImputer import SklearnImputer
 
-input_data = pd.read_csv(r'./modules/test_data/territories.csv')
+input_data = pd.read_csv(r'./test_data/territories.csv')
 categorical_list = ['Name', 'Location']
 random_state = 327
 
@@ -213,12 +212,10 @@ class TestFitAndFitTransform(unittest.TestCase):
         """
         Run sklearn methods for input_data to obtain outputs.
         Note: convergence warning switched off for MLP.
-        HierarchicalHotDeck raises error
         """
         super(TestFitAndFitTransform, self).__init__(*args, **kwargs)
 
-        classifiers = [HierarchicalHotDeck(),
-                       DummyClassifier(strategy='most_frequent'),
+        classifiers = [DummyClassifier(strategy='most_frequent'),
                        DummyClassifier(strategy='stratified', random_state=random_state),
                        LogisticRegression(max_iter=1, random_state=random_state),
                        DecisionTreeClassifier(random_state=random_state),
@@ -227,8 +224,7 @@ class TestFitAndFitTransform(unittest.TestCase):
                        ExtraTreesClassifier(random_state=random_state),
                        MLPClassifier(random_state=random_state)]
 
-        regressors = [HierarchicalHotDeck(),
-                      DummyRegressor(strategy='mean'),
+        regressors = [DummyRegressor(strategy='mean'),
                       DummyRegressor(strategy='median'),
                       LinearRegression(),
                       DecisionTreeRegressor(random_state=random_state),

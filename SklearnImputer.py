@@ -55,6 +55,7 @@ class SklearnImputer():
 
     class_threshold : int, optional (default = 30)
                 If a categorical variable has more classes than this threshold then it will not be used as a feature in the model.
+                Imputation models generally do not need many features - 30 would typically be far too many.
 
     features: list, (default = None)
         list of columns to use as features, default all are used
@@ -79,11 +80,11 @@ class SklearnImputer():
 
         expected_types = [pd.DataFrame, list, str, list, int, list, bool]
 
-        for parameter, input, expected_type in zip(string_versions, function_inputs, expected_types):
-            if not isinstance(input, expected_type):
+        for parameter, function_input, expected_type in zip(string_versions, function_inputs, expected_types):
+            if not isinstance(function_input, expected_type):
+                input_type = str(type(function_input))
 
-                input_type = str(type(input))
-
+                # formatting the strings of the types to make them more readable
                 for string in ['class', '<', '>', ' ', "'"]:
                     input_type = input_type.replace(string, '')
                     expected_type = str(expected_type).replace(string, '')
@@ -150,8 +151,8 @@ class SklearnImputer():
         # simple hierarchical impute so that we don't need to worry about missing values
 
         df = self.input_data[self.features] if len(self.features) > 0 else self.input_data
-        categorical = [x for x in self.categorical if x in self.features] if len(
-            self.features) > 0 else self.categorical
+        categorical = [x for x in self.categorical if x in self.features] if \
+            len(self.features) > 0 else self.categorical
 
         simple_impute = df.fillna(method='ffill')
         simple_impute = simple_impute.fillna(method='bfill')
@@ -193,14 +194,14 @@ class SklearnImputer():
 
         random_seed : int, optional (default = 42)
         """
-        global imputed
         start_overall_time = time.time()
 
         all_features = self.create_features()
 
         fitted_scaler = scaler.fit(all_features)
 
-        features = pd.DataFrame(fitted_scaler.fit_transform(all_features), index=all_features.index,
+        features = pd.DataFrame(fitted_scaler.fit_transform(all_features),
+                                index=all_features.index,
                                 columns=all_features.columns)
 
         missing_info = self.missing_metrics()
@@ -275,7 +276,8 @@ class SklearnImputer():
                 trained_models[column] = {'impute_time': impute_time,
                                           'trained_model': fitted_model,
                                           'model_features': list(features_data.columns),
-                                          'label_encoder': fitted_label_encode, 'train_time': train_time,
+                                          'label_encoder': fitted_label_encode,
+                                          'train_time': train_time,
                                           'test_time': test_time,
                                           'model_performance': model_performance}
 
@@ -284,7 +286,8 @@ class SklearnImputer():
                 trained_models[column] = {'trained_model': copy.deepcopy(fitted_model),
                                           'model_features': list(features_data.columns),
                                           'label_encoder': copy.deepcopy(fitted_label_encode),
-                                          'train_time': train_time, 'test_time': test_time,
+                                          'train_time': train_time,
+                                          'test_time': test_time,
                                           'model_performance': model_performance}
 
             print('-------------------------------')
