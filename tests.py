@@ -26,9 +26,9 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.utils.testing import ignore_warnings
 from tabulate import tabulate
 
-from SklearnImputer import SklearnImputer
+from scikit_learn_imputer import SklearnImputer
 
-input_data = pd.read_csv(r'./test_data/territories.csv')
+input_data = pd.read_csv(r'test_data_territories.csv')
 categorical_list = ['Name', 'Location']
 random_state = 327
 

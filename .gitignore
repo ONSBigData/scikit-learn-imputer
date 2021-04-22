@@ -8,3 +8,5 @@ __pycache__
 *.pptx
 
 venv
+
+.DS_Store
